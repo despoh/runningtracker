@@ -17,6 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="50dp"
+        android:textColor="@android:color/white"
         android:background="@drawable/round_button"
         />
 
@@ -39,6 +40,7 @@
             android:text="0.00 Km"
             android:paddingTop="40dp"
             android:paddingBottom="40dp"
+            android:textColor="@android:color/white"
             android:background="@drawable/round_textview"
             />
 
@@ -52,6 +54,7 @@
             android:text="0:00"
             android:paddingTop="40dp"
             android:paddingBottom="40dp"
+            android:textColor="@android:color/white"
             android:background="@drawable/round_textview"
 
             />

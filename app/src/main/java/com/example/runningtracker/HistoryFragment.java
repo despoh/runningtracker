@@ -83,7 +83,15 @@ public class HistoryFragment extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if(isVisibleToUser){
-            refreshView("one_day");
+           switch(spinner.getSelectedItemPosition()){
+               case 0 : refreshView("one_day"); break;
+               case 1 : refreshView("one_week");break;
+               case 2: refreshView("one_month");break;
+               case 3: refreshView("three_month");break;
+               case 4 : refreshView("six_month");break;
+               case 5: refreshView("one_year");break;
+               case 6: refreshView("all_sessions");break;
+           }
         }
     }
 
@@ -105,24 +113,26 @@ public class HistoryFragment extends Fragment {
             totalDistance += session.getTotalDistance();
         }
 
-        avgSpeed = totalDistance/(float)totalTime/60;
+        avgSpeed = totalDistance*1000/(float)totalTime/60;
 
 
         totalTimeTextView.setText(minuteSecondString(totalTime*1000));
         totalDistanceTextView.setText(String.format("%.2f", totalDistance) + "KM");
-        avgSpeedTextView.setText(String.format("%.2f", avgSpeed) + "Km/Min");
+        avgSpeedTextView.setText(String.format("%.2f", avgSpeed) + "M/Min");
 
     }
 
     public String minuteSecondString(int millsec){
+        int hours = (millsec/1000)/60/60;
         int minutes = (millsec/1000) /60;
         int second = (millsec/1000) % 60;
 
-        if(second<10){
-            return minutes + " : 0" + second;
+        if(hours == 0 && minutes == 0){
+            return second + " s";
+        }else if(hours == 0){
+            return minutes + "m " + second + " s";
         }else{
-            return minutes + " : " + second;
-
+            return hours + " h " + minutes + " m " + second + " s";
         }
     }
 

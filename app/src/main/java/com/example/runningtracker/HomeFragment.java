@@ -136,7 +136,7 @@ public class HomeFragment extends Fragment {
                     Intent intent = new Intent(getContext(),TrackerService.class);
                     getContext().startService(intent);
                     getContext().bindService(intent, connection, Context.BIND_AUTO_CREATE);
-                    startDateAndTime = Calendar.getInstance().getTimeInMillis() - (long) 2*30*24*60*60*1000;
+                    startDateAndTime = Calendar.getInstance().getTimeInMillis();
                 }else{
                     RunningSession session = new RunningSession(trackerService.tracker.getLocationStringList(),startDateAndTime,trackerService.tracker.getTotalRunningDistance(),trackerService.tracker.getTotalTime(),trackerService.tracker.getTotalRunningDistance() * 1000 / 60);
                     dbHelper.add(session);

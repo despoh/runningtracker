@@ -41,9 +41,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         SimpleDateFormat formatter = new SimpleDateFormat("d MMM YYYY\nh:mm a");
 
-        holder.totalDistanceTextView.setText(session.getTotalDistance()+ "");
+        holder.totalDistanceTextView.setText(String.format("%.2f", session.getTotalDistance()) + "Km");
         holder.dateTextView.setText(formatter.format(new Date(session.getDate())) + "");
-        holder.totalTimeTextView.setText(session.getTotalTime() + "");
+        holder.totalTimeTextView.setText(minuteSecondString((int) session.getTotalTime()*1000) + "");
 
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -59,6 +59,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return sessions.size();
     }
 
+
+
+    public String minuteSecondString(int millsec){
+        int hours = (millsec/1000)/60/60;
+        int minutes = (millsec/1000) /60;
+        int second = (millsec/1000) % 60;
+
+        if(hours == 0 && minutes == 0){
+            return second + " s";
+        }else if(hours == 0){
+            return minutes + "m " + second + " s";
+        }else{
+            return hours + " h " + minutes + " m " + second + " s";
+        }
+    }
 
 
     public class ViewHolder extends RecyclerView.ViewHolder{

@@ -84,8 +84,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SimpleDateFormat timeFormatter = new SimpleDateFormat("h:mm a");
 
         totalTimeTextView.setText(minuteSecondString((int)session.getTotalTime()*1000));
-        totalDistanceTextView.setText(String.format("%.2f", session.getTotalDistance()) + "KM");
-        avgSpeedTextView.setText(String.format("%.2f", session.getAvgSpeed()) + "M/Min");
+        totalDistanceTextView.setText(String.format("%.2f", session.getTotalDistance()) + " km");
+        avgSpeedTextView.setText(String.format("%.2f", session.getAvgSpeed()) + " m/min");
         startTimeTextView.setText(timeFormatter.format(new Date(session.getDate())));
         dateTextView.setText(dateFormatter.format(new Date(session.getDate())));
         nearByPlaceTextView.setText("Location: near " + likelihoodPlace.getPlace().getName());

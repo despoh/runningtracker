@@ -1,5 +1,6 @@
 package com.example.runningtracker;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -31,9 +33,8 @@ public class HistoryFragment extends Fragment {
     TextView totalDistanceTextView;
     TextView totalTimeTextView;
     TextView avgSpeedTextView;
-
+    ProgressBar progressBar;
     List<RunningSession> sessions = new ArrayList<>();
-
 
 
     @Nullable
@@ -44,7 +45,7 @@ public class HistoryFragment extends Fragment {
         totalDistanceTextView = (TextView) view.findViewById(R.id.totalDistanceTextView);
         totalTimeTextView = (TextView) view.findViewById(R.id.totalTimeTextView);
         avgSpeedTextView = (TextView) view.findViewById(R.id.avgSpeedTextView);
-
+        progressBar = (ProgressBar) view.findViewById(R.id.progressBar1);
         String[] sessionsArray = new String[]{"Today's session","Week's sessions","One Month sessions","Three Months sessions","Six Months","One Years","All sessions"};
         spinner = (Spinner) view.findViewById(R.id.spinner);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getContext(),android.R.layout.simple_spinner_item,sessionsArray);
@@ -68,7 +69,23 @@ public class HistoryFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        progressBar.setVisibility(View.GONE);
+        getView().findViewById(R.id.overlay).setVisibility(View.GONE);
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        progressBar.setVisibility(View.VISIBLE);
+        getView().findViewById(R.id.overlay).setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -101,8 +118,8 @@ public class HistoryFragment extends Fragment {
 
 
         totalTimeTextView.setText(minuteSecondString(totalTime*1000));
-        totalDistanceTextView.setText(String.format("%.2f", totalDistance) + "KM");
-        avgSpeedTextView.setText(String.format("%.2f", avgSpeed) + "M/Min");
+        totalDistanceTextView.setText(String.format("%.2f", totalDistance) + " km");
+        avgSpeedTextView.setText(String.format("%.2f", avgSpeed) + " m/min");
 
     }
 

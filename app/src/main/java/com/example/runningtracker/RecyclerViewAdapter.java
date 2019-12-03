@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,7 +20,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private LayoutInflater inflater;
     private List<RunningSession> sessions;
-
+    ProgressBar progressBar;
 
 
     RecyclerViewAdapter(Context context, List<RunningSession>sessions){
@@ -36,12 +37,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerViewAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final RecyclerViewAdapter.ViewHolder holder, final int position) {
         final RunningSession session = sessions.get(position);
-
         SimpleDateFormat formatter = new SimpleDateFormat("d MMM YYYY\nh:mm a");
 
-        holder.totalDistanceTextView.setText(String.format("%.2f", session.getTotalDistance()) + "Km");
+        holder.totalDistanceTextView.setText(String.format("%.2f", session.getTotalDistance()) + " km");
         holder.dateTextView.setText(formatter.format(new Date(session.getDate())) + "");
         holder.totalTimeTextView.setText(minuteSecondString((int) session.getTotalTime()*1000) + "");
 
@@ -95,4 +95,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
 
     }
+
+
 }

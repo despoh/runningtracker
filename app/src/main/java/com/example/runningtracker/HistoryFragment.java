@@ -53,15 +53,7 @@ public class HistoryFragment extends Fragment {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                switch(i){
-                    case 0 : refreshView("one_day"); break;
-                    case 1 : refreshView("one_week");break;
-                    case 2: refreshView("one_month");break;
-                    case 3: refreshView("three_month");break;
-                    case 4 : refreshView("six_month");break;
-                    case 5: refreshView("one_year");break;
-                    case 6: refreshView("all_sessions");break;
-                }
+                refreshView(i);
             }
 
             @Override
@@ -70,7 +62,7 @@ public class HistoryFragment extends Fragment {
             }
         });
 
-        sessions.addAll(dbHelper.find(getTimeInMillisFor("one_day")));
+        sessions.addAll(dbHelper.find(getTimeInMillisFor(0)));
         recyclerView = (RecyclerView) view.findViewById(R.id.recycleView);
         adapter = new RecyclerViewAdapter(getContext(), sessions);
         recyclerView.setAdapter(adapter);
@@ -83,19 +75,11 @@ public class HistoryFragment extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if(isVisibleToUser){
-           switch(spinner.getSelectedItemPosition()){
-               case 0 : refreshView("one_day"); break;
-               case 1 : refreshView("one_week");break;
-               case 2: refreshView("one_month");break;
-               case 3: refreshView("three_month");break;
-               case 4 : refreshView("six_month");break;
-               case 5: refreshView("one_year");break;
-               case 6: refreshView("all_sessions");break;
-           }
+           refreshView(spinner.getSelectedItemPosition());
         }
     }
 
-    public void refreshView(String period){
+    public void refreshView(int position){
 
         int totalTime = 0 ;
         float totalDistance = 0;
@@ -105,7 +89,7 @@ public class HistoryFragment extends Fragment {
             sessions.clear();
         }
 
-        sessions.addAll(dbHelper.find(getTimeInMillisFor(period)));
+        sessions.addAll(dbHelper.find(getTimeInMillisFor(position)));
         adapter.notifyDataSetChanged();
 
         for(RunningSession session : sessions){
@@ -136,12 +120,12 @@ public class HistoryFragment extends Fragment {
         }
     }
 
-    public long getTimeInMillisFor(String period){
+    public long getTimeInMillisFor(int position){
         Calendar c = Calendar.getInstance();
         long currentTime = c.getTimeInMillis();
 
-        switch (period){
-            case "one_day": {
+        switch (position){
+            case 0: {
 
                 c.set(Calendar.HOUR_OF_DAY,0);
                 c.set(Calendar.MINUTE,0);
@@ -149,24 +133,24 @@ public class HistoryFragment extends Fragment {
                 c.set(Calendar.MILLISECOND,0);
                 return currentTime - (currentTime - c.getTimeInMillis());
             }
-            case "one_week": {
+            case 1: {
                 c.add(Calendar.DAY_OF_YEAR,-7);
                 return currentTime - (currentTime - c.getTimeInMillis());
             }
-            case "one_month": {
+            case 2: {
                 c.add(Calendar.MONTH,-1);
                 return currentTime - (currentTime - c.getTimeInMillis());
             }
-            case "three_month" : {
+            case 3 : {
                 c.add(Calendar.MONTH,-3);
                 return currentTime - (currentTime - c.getTimeInMillis());
             }
-            case "six_month" : {
+            case 4 : {
                 c.add(Calendar.MONTH,-6);
                 return currentTime - (currentTime - c.getTimeInMillis());
             }
 
-            case "one_year" : {
+            case 5 : {
                 c.add(Calendar.YEAR, -1);
                 return currentTime - (currentTime - c.getTimeInMillis());
             }
@@ -178,7 +162,6 @@ public class HistoryFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dbHelper = new DbHelper(this.getContext(), null, null, 1);
-
 
     }
 }

@@ -49,7 +49,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(view.getContext(),MapsActivity.class);
+                intent.putExtra("locationString",session.getStringList());
+                intent.putExtra("sessionId",session.getId());
+                view.getContext().startActivity(intent);
             }
         });
     }

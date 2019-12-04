@@ -5,9 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 
@@ -50,7 +53,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     TextView startTimeTextView ;
     TextView nearByPlaceTextView ;
     TextView dateTextView ;
-
+    TextView modeTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,9 +70,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         session =  dbHelper.findById(getIntent().getIntExtra("sessionId",-1));
         locations = session.getStringList().split(" \\+ ");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         getNearbyLocation();
         updateView();
     }
+
 
     public void populateTextView(){
         totalTimeTextView = (TextView) findViewById(R.id.map_totalTimeTextView);
@@ -78,6 +83,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         startTimeTextView = (TextView) findViewById(R.id.map_startingTimeTextView);
         nearByPlaceTextView = (TextView) findViewById(R.id.map_placeTextView);
         dateTextView = (TextView) findViewById(R.id.map_dateTextView);
+        modeTextView = (TextView) findViewById(R.id.map_modeTextView);
     }
 
     public void updateView(){
@@ -89,6 +95,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         avgSpeedTextView.setText(String.format("%.2f", session.getAvgSpeed()) + " m/min");
         startTimeTextView.setText(timeFormatter.format(new Date(session.getDate())));
         dateTextView.setText(dateFormatter.format(new Date(session.getDate())));
+        modeTextView.setTextColor(session.getMode().equals("Run") ? Color.BLACK : Color.BLUE);
+        modeTextView.setText(session.getMode().toUpperCase());
 
     }
 
@@ -119,7 +127,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     FindCurrentPlaceResponse response = task.getResult();
 
                     likelihoodPlace = response.getPlaceLikelihoods().get(0);
-                    nearByPlaceTextView.setText("Nearby Place: " + likelihoodPlace.getPlace().getName());
+                    nearByPlaceTextView.setText(likelihoodPlace.getPlace().getName());
 
                 } else {
                     Exception exception = task.getException();
@@ -127,7 +135,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         ApiException apiException = (ApiException) exception;
                         Log.d("mama", "Place not found: " + apiException.getStatusCode());
                     }
-                    nearByPlaceTextView.setText("Nearby place: N/A");
+                    nearByPlaceTextView.setText("N/A");
 
                 }
             }
@@ -137,12 +145,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.map_activity_menu,menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()){
+            case R.id.deleteMenuButton: {
+                dbHelper.deleteSession(session.getId());
+                finish();
+                onBackPressed();
+
+            }
 
             case android.R.id.home: onBackPressed();
 
@@ -152,6 +167,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     }
+
 
     /**
      * Manipulates the map once available.

@@ -249,8 +249,22 @@ public class HomeFragment extends Fragment {
     public void saveSessionAndKillService(boolean isServiceBounded){
         timer.cancel();
         timer.purge();
-        RunningSession session = new RunningSession(trackerService.tracker.getLocationStringList(),startDateAndTime,trackerService.tracker.getTotalRunningDistance(),trackerService.tracker.getTotalTime(),trackerService.tracker.getTotalRunningDistance() * 1000 / 60,exerciseMode);
-        dbHelper.add(session);
+        if(!trackerService.tracker.getLocationStringList().equals("")){
+            RunningSession session = new RunningSession(trackerService.tracker.getLocationStringList(),startDateAndTime,trackerService.tracker.getTotalRunningDistance(),trackerService.tracker.getTotalTime(),trackerService.tracker.getTotalRunningDistance() * 1000 / 60,exerciseMode);
+            dbHelper.add(session);
+        }else{
+            new AlertDialog.Builder(getContext())
+                    .setTitle("Sessions too short < 1s")
+                    .setMessage("It's not saved")
+
+                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                    // The dialog is automatically dismissed when a dialog button is clicked.
+
+                    // A null listener allows the button to dismiss the dialog and take no further action.
+                    .setNegativeButton("OK", null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
         Intent intent = new Intent(getContext(),TrackerService.class);
 
         trackerService.tracker.stopGPS();

@@ -84,6 +84,7 @@ public class HistoryFragment extends Fragment {
         super.onStart();
         progressBar.setVisibility(View.GONE);
         getView().findViewById(R.id.overlay).setVisibility(View.GONE);
+        refreshView(spinner.getSelectedItemPosition());
 
     }
 

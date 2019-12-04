@@ -116,26 +116,19 @@ public class DbHelper extends SQLiteOpenHelper {
 
         return session;
     }
-//
-//    public boolean deleteProduct(int id){
-//        boolean result = false;
-//        String selection = "id = \"" + id + "\"";
-//        int rowsDeleted = myCR.delete(MyContentProvider.CONTENT_URI,
-//                selection, null);
-//        if (rowsDeleted>0){
-//            result = true;
-//        }
-//
-//        return  result;
-//    }
-//
-//    public void updateProduct(int id,int rating){
-//        ContentValues values = new ContentValues();
-//        values.put(COLUMN_RATING, rating);
-//        String selection = "id = \"" + id + "\"";
-//        myCR.update(MyContentProvider.CONTENT_URI,values,selection,null);
-//
-//    }
+
+    public boolean deleteSession(int id){
+        boolean result = false;
+        String selection = "id = \"" + id + "\"";
+        int rowsDeleted = myCR.delete(MyContentProvider.CONTENT_URI,
+                selection, null);
+        if (rowsDeleted>0){
+            result = true;
+        }
+
+        return  result;
+    }
+
 
 
 }

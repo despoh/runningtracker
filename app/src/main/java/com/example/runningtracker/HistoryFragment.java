@@ -49,7 +49,7 @@ public class HistoryFragment extends Fragment {
         totalTimeTextView = (TextView) view.findViewById(R.id.totalTimeTextView);
         avgSpeedTextView = (TextView) view.findViewById(R.id.avgSpeedTextView);
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar1);
-        String[] sessionsArray = new String[]{"Today's session","Week's sessions","One Month sessions","Three Months sessions","Six Months","One Years","All sessions"};
+        String[] sessionsArray = new String[]{"Today's session","One Week","One Month","Three Months","Six Months","One Years","All sessions"};
         spinner = (Spinner) view.findViewById(R.id.spinner);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getContext(),android.R.layout.simple_spinner_item,sessionsArray);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

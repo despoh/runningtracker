@@ -223,6 +223,7 @@ public class HomeFragment extends Fragment {
                 isRunning= !isRunning;
                 toggleRunningButton();
                 if(isRunning){
+                    runningButton.setEnabled(false);
                     startDateAndTime = Calendar.getInstance().getTimeInMillis();
                     Intent intent = new Intent(getContext(),TrackerService.class);
                     intent.putExtra("mode",exerciseMode);
@@ -357,6 +358,8 @@ public class HomeFragment extends Fragment {
             isServiceBounded = true;
             toggleRunningButton();
             startCalculatingDistance();
+            runningButton.setEnabled(true);
+
         }
 
         @Override

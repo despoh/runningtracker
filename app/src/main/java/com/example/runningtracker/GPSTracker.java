@@ -74,6 +74,7 @@ public class GPSTracker extends Service implements LocationListener {
 
     public void stopGPS(){
         timer.cancel();
+        timer.purge();
         manager.removeUpdates(GPSTracker.this);
     }
 

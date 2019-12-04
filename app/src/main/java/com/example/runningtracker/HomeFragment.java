@@ -247,11 +247,13 @@ public class HomeFragment extends Fragment {
     }
 
     public void saveSessionAndKillService(boolean isServiceBounded){
+        timer.cancel();
+        timer.purge();
         RunningSession session = new RunningSession(trackerService.tracker.getLocationStringList(),startDateAndTime,trackerService.tracker.getTotalRunningDistance(),trackerService.tracker.getTotalTime(),trackerService.tracker.getTotalRunningDistance() * 1000 / 60,exerciseMode);
         dbHelper.add(session);
         Intent intent = new Intent(getContext(),TrackerService.class);
-        timer.cancel();
-        timer.purge();
+
+        trackerService.tracker.stopGPS();
         getContext().stopService(intent);
         if(isServiceBounded){
             getContext().unbindService(connection);
@@ -294,7 +296,7 @@ public class HomeFragment extends Fragment {
                 }
             };
 
-            timer.schedule(updateTimeTask,300,1000);
+            timer.schedule(updateTimeTask,0,1000);
             timer.schedule(updateDistanceTask,1000,10000);
         }catch (IllegalStateException e){
 

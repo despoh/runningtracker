@@ -47,6 +47,7 @@ public class HomeFragment extends Fragment {
     int totalTime = 0;
     TextView runningDistanceTextView;
     TextView totalTimeTextView;
+    TextView msgToShowModeTextView;
     boolean isRunning = false;
     boolean isServiceBounded = false;
     private long startDateAndTime;
@@ -70,6 +71,19 @@ public class HomeFragment extends Fragment {
             editor.commit();
         }
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(isServiceBounded){
+            isServiceBounded = false;
+            SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putBoolean("return", false);
+            editor.commit();
+            saveSessionAndKillService(isServiceBounded);
+        }
     }
 
     @Override
@@ -97,7 +111,7 @@ public class HomeFragment extends Fragment {
         runningDistanceTextView = (TextView) view.findViewById(R.id.runningDistanceTextView);
         totalTimeTextView = (TextView) view.findViewById(R.id.timeTextView);
         walkingModeSwitchButton = (Switch) view.findViewById(R.id.switchButton);
-
+        msgToShowModeTextView = (TextView) view.findViewById(R.id.msgToShowModeTextView);
         toggleRunningButton();
         setButtonClickListener();
         setUpSwitchListener();
@@ -108,6 +122,8 @@ public class HomeFragment extends Fragment {
     private void toggleRunningButton(){
         if(isRunning){
             runningButton.setText("Stop");
+            totalTimeTextView.setText("0:00");
+            runningDistanceTextView.setText("0.00 km");
         }else{
             runningButton.setText("Start");
         }
@@ -159,19 +175,32 @@ public class HomeFragment extends Fragment {
                     getContext().startService(intent);
                     getContext().bindService(intent, connection, Context.BIND_AUTO_CREATE);
                     startDateAndTime = Calendar.getInstance().getTimeInMillis();
+                    walkingModeSwitchButton.setVisibility(View.GONE);
+                    msgToShowModeTextView.setText(exerciseMode.toUpperCase() + " MODE");
+                    msgToShowModeTextView.setVisibility(View.VISIBLE);
                 }else{
-                    RunningSession session = new RunningSession(trackerService.tracker.getLocationStringList(),startDateAndTime,trackerService.tracker.getTotalRunningDistance(),trackerService.tracker.getTotalTime(),trackerService.tracker.getTotalRunningDistance() * 1000 / 60,exerciseMode);
-                    dbHelper.add(session);
-                    Intent intent = new Intent(getContext(),TrackerService.class);
-                    getContext().stopService(intent);
-                    getContext().unbindService(connection);
-                    isServiceBounded = false;
-                    timer.cancel();
+                    saveSessionAndKillService(isServiceBounded);
+                    walkingModeSwitchButton.setEnabled(true);
+                    walkingModeSwitchButton.setVisibility(View.VISIBLE);
+                    msgToShowModeTextView.setVisibility(View.GONE);
+
                 }
             }
         });
 
 
+    }
+
+    public void saveSessionAndKillService(boolean isServiceBounded){
+        RunningSession session = new RunningSession(trackerService.tracker.getLocationStringList(),startDateAndTime,trackerService.tracker.getTotalRunningDistance(),trackerService.tracker.getTotalTime(),trackerService.tracker.getTotalRunningDistance() * 1000 / 60,exerciseMode);
+        dbHelper.add(session);
+        Intent intent = new Intent(getContext(),TrackerService.class);
+        getContext().stopService(intent);
+        if(isServiceBounded){
+            getContext().unbindService(connection);
+        }
+        this.isServiceBounded = false;
+        timer.cancel();
     }
 
     public void startCalculatingDistance(){
@@ -184,7 +213,7 @@ public class HomeFragment extends Fragment {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                runningDistanceTextView.setText(String.format("%.2f",trackerService.tracker.getTotalRunningDistance()) + " Km");
+                                runningDistanceTextView.setText(String.format("%.2f",trackerService.tracker.getTotalRunningDistance()) + " km");
                             }
                         });
                     }

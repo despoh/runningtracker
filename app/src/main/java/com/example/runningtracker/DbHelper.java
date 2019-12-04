@@ -31,6 +31,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_TIME = "time";
     public static final String COLUMN_AVGSPEED = "avgSpeed";
     public static final String COLUMN_LOCATION_LIST = "locationList";
+    public static final String COLUMN_EXERCISE_MODE = "mode";
 
 
     public DbHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
@@ -46,7 +47,7 @@ public class DbHelper extends SQLiteOpenHelper {
         String CREATE_PRODUCTS_TABLE = "CREATE TABLE " +
                 TABLE_PRODUCTS + "("
                 + COLUMN_ID + " INTEGER PRIMARY KEY," + COLUMN_DATE
-                + " INTEGER," + COLUMN_DISTANCE + " REAL," + COLUMN_TIME + " INTEGER," + COLUMN_AVGSPEED + " REAL," + COLUMN_LOCATION_LIST + " TEXT" + ")";
+                + " INTEGER," + COLUMN_DISTANCE + " REAL," + COLUMN_TIME + " INTEGER," + COLUMN_AVGSPEED + " REAL," + COLUMN_LOCATION_LIST + " TEXT," + COLUMN_EXERCISE_MODE + " TEXT" +")";
         sqLiteDatabase.execSQL(CREATE_PRODUCTS_TABLE);
     }
 
@@ -63,6 +64,7 @@ public class DbHelper extends SQLiteOpenHelper {
         values.put(COLUMN_DISTANCE,runningSession.getTotalDistance());
         values.put(COLUMN_AVGSPEED,runningSession.getAvgSpeed());
         values.put(COLUMN_LOCATION_LIST,runningSession.getStringList());
+        values.put(COLUMN_EXERCISE_MODE,runningSession.getMode());
 
         myCR.insert(MyContentProvider.CONTENT_URI, values);
     }
@@ -71,7 +73,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public List<RunningSession> find(long timestamp) {
         String selection = "";
         List<RunningSession> sessionList = new ArrayList<>();
-        String[] projection = {COLUMN_ID,COLUMN_LOCATION_LIST,COLUMN_DATE,COLUMN_DISTANCE, COLUMN_TIME,COLUMN_AVGSPEED};
+        String[] projection = {COLUMN_ID,COLUMN_LOCATION_LIST,COLUMN_DATE,COLUMN_DISTANCE, COLUMN_TIME,COLUMN_AVGSPEED,COLUMN_EXERCISE_MODE};
         if(timestamp != 0){
                 selection = "date >= \"" + timestamp + "\"";
         }
@@ -83,7 +85,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                RunningSession session = new RunningSession(cursor.getString(1),cursor.getLong(2),cursor.getFloat(3),cursor.getInt(4),cursor.getFloat(5));
+                RunningSession session = new RunningSession(cursor.getString(1),cursor.getLong(2),cursor.getFloat(3),cursor.getInt(4),cursor.getFloat(5),cursor.getString(6));
                 session.setId(Integer.parseInt(cursor.getString(0)));
                 sessionList.add(session);
             } while (cursor.moveToNext());
@@ -96,7 +98,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public RunningSession findById(int id){
         RunningSession session = null;
         String selection = "";
-        String[] projection = {COLUMN_ID,COLUMN_LOCATION_LIST,COLUMN_DATE,COLUMN_DISTANCE, COLUMN_TIME,COLUMN_AVGSPEED};
+        String[] projection = {COLUMN_ID,COLUMN_LOCATION_LIST,COLUMN_DATE,COLUMN_DISTANCE, COLUMN_TIME,COLUMN_AVGSPEED,COLUMN_EXERCISE_MODE};
         if(id != 0){
             selection = "id = \"" + id + "\"";
         }
@@ -109,7 +111,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             cursor.moveToFirst();
-            session = new RunningSession(cursor.getString(1),cursor.getLong(2),cursor.getFloat(3),cursor.getInt(4),cursor.getFloat(5));
+            session = new RunningSession(cursor.getString(1),cursor.getLong(2),cursor.getFloat(3),cursor.getInt(4),cursor.getFloat(5),cursor.getString(6));
             session.setId(Integer.parseInt(cursor.getString(0)));
         }
 

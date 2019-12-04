@@ -2,6 +2,7 @@ package com.example.runningtracker;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.SimpleDateFormat;
@@ -23,15 +25,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     ProgressBar progressBar;
 
 
-    RecyclerViewAdapter(Context context, List<RunningSession>sessions){
+    RecyclerViewAdapter(Context context, List<RunningSession>sessions,ProgressBar bar){
         this.inflater = LayoutInflater.from(context);
         this.sessions = sessions;
+        this.progressBar = bar;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.recyclerview_row, parent, false);
+
         return new ViewHolder(view);
     }
 
@@ -46,9 +50,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.totalTimeTextView.setText(minuteSecondString((int) session.getTotalTime()*1000) + "");
 
 
+        holder.modeTextView.setTextColor(session.getMode().equals("Run") ? Color.BLACK : Color.BLUE);
+        holder.modeTextView.setText(session.getMode()+"");
+
+
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressBar.setVisibility(View.VISIBLE);
                 Intent intent = new Intent(view.getContext(),MapsActivity.class);
                 intent.putExtra("locationString",session.getStringList());
                 intent.putExtra("sessionId",session.getId());
@@ -83,15 +93,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         TextView dateTextView ;
         TextView totalDistanceTextView;
         TextView totalTimeTextView;
+        TextView modeTextView;
 
         ViewHolder(View view) {
 
             super(view);
-
             dateTextView = (TextView) view.findViewById(R.id.row_dateTextView);
             totalDistanceTextView = (TextView) view.findViewById(R.id.row_distanceTextView);
             totalTimeTextView = (TextView) view.findViewById(R.id.row_TimeTextView);
+            modeTextView = (TextView) view.findViewById(R.id.row_modeTextView);
         }
+
+
 
 
     }

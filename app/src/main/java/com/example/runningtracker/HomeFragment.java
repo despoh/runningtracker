@@ -16,6 +16,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -49,6 +51,8 @@ public class HomeFragment extends Fragment {
     boolean isServiceBounded = false;
     private long startDateAndTime;
     private Boolean isComeBackFromPendingIntent = false;
+    private String exerciseMode = "Run";
+    Switch walkingModeSwitchButton;
 
 
     @Override
@@ -71,6 +75,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        checkPermision();
         SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences("MyPref", 0);
         SharedPreferences.Editor editor = pref.edit();
 
@@ -91,8 +96,11 @@ public class HomeFragment extends Fragment {
         runningButton = (Button) view.findViewById(R.id.runningButton);
         runningDistanceTextView = (TextView) view.findViewById(R.id.runningDistanceTextView);
         totalTimeTextView = (TextView) view.findViewById(R.id.timeTextView);
+        walkingModeSwitchButton = (Switch) view.findViewById(R.id.switchButton);
+
         toggleRunningButton();
         setButtonClickListener();
+        setUpSwitchListener();
         return view;
 
     }
@@ -105,11 +113,25 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    private void setUpSwitchListener(){
+        walkingModeSwitchButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    exerciseMode = "Walk";
+                }else{
+                    exerciseMode = "Run";
+                }
+
+                Log.d("mama","mode changed: "+ exerciseMode);
+            }
+        });
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dbHelper = new DbHelper(this.getContext(), null, null, 1);
-        checkPermision();
 
     }
 
@@ -118,9 +140,9 @@ public class HomeFragment extends Fragment {
             runningButton.setEnabled(false);
             runningButton.setText("GPS is Disabled");
             if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)){
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},LOCATION_REQUEST_CODE);
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},LOCATION_REQUEST_CODE);
             }else{
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},LOCATION_REQUEST_CODE);
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},LOCATION_REQUEST_CODE);
             }
         }
     }
@@ -138,7 +160,7 @@ public class HomeFragment extends Fragment {
                     getContext().bindService(intent, connection, Context.BIND_AUTO_CREATE);
                     startDateAndTime = Calendar.getInstance().getTimeInMillis();
                 }else{
-                    RunningSession session = new RunningSession(trackerService.tracker.getLocationStringList(),startDateAndTime,trackerService.tracker.getTotalRunningDistance(),trackerService.tracker.getTotalTime(),trackerService.tracker.getTotalRunningDistance() * 1000 / 60);
+                    RunningSession session = new RunningSession(trackerService.tracker.getLocationStringList(),startDateAndTime,trackerService.tracker.getTotalRunningDistance(),trackerService.tracker.getTotalTime(),trackerService.tracker.getTotalRunningDistance() * 1000 / 60,exerciseMode);
                     dbHelper.add(session);
                     Intent intent = new Intent(getContext(),TrackerService.class);
                     getContext().stopService(intent);
@@ -215,8 +237,10 @@ public class HomeFragment extends Fragment {
             {
                 if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     runningButton.setEnabled(true);
+                    runningButton.setText("Run");
                 }else{
                     runningButton.setEnabled(false);
+                    runningButton.setText("GPS disabled");
                 }
             }
         }

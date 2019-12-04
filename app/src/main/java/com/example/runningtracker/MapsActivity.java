@@ -68,6 +68,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         locations = session.getStringList().split(" \\+ ");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getNearbyLocation();
+        updateView();
     }
 
     public void populateTextView(){
@@ -88,7 +89,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         avgSpeedTextView.setText(String.format("%.2f", session.getAvgSpeed()) + " m/min");
         startTimeTextView.setText(timeFormatter.format(new Date(session.getDate())));
         dateTextView.setText(dateFormatter.format(new Date(session.getDate())));
-        nearByPlaceTextView.setText("Location: near " + likelihoodPlace.getPlace().getName());
 
     }
 
@@ -119,7 +119,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     FindCurrentPlaceResponse response = task.getResult();
 
                     likelihoodPlace = response.getPlaceLikelihoods().get(0);
-                    updateView();
+                    nearByPlaceTextView.setText("Nearby Place: " + likelihoodPlace.getPlace().getName());
 
                 } else {
                     Exception exception = task.getException();
@@ -127,6 +127,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         ApiException apiException = (ApiException) exception;
                         Log.d("mama", "Place not found: " + apiException.getStatusCode());
                     }
+                    nearByPlaceTextView.setText("Nearby place: N/A");
+
                 }
             }
     });

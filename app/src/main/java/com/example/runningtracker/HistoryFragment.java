@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -11,10 +12,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -65,13 +68,16 @@ public class HistoryFragment extends Fragment {
 
         sessions.addAll(dbHelper.find(getTimeInMillisFor(0)));
         recyclerView = (RecyclerView) view.findViewById(R.id.recycleView);
-        adapter = new RecyclerViewAdapter(getContext(), sessions);
+        adapter = new RecyclerViewAdapter(getContext(), sessions,progressBar);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
 
 
         return view;
     }
+
+
 
     @Override
     public void onStart() {
@@ -84,7 +90,6 @@ public class HistoryFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        progressBar.setVisibility(View.VISIBLE);
         getView().findViewById(R.id.overlay).setVisibility(View.VISIBLE);
     }
 

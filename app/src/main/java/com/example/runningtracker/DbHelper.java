@@ -65,7 +65,6 @@ public class DbHelper extends SQLiteOpenHelper {
         values.put(COLUMN_AVGSPEED,runningSession.getAvgSpeed());
         values.put(COLUMN_LOCATION_LIST,runningSession.getStringList());
         values.put(COLUMN_EXERCISE_MODE,runningSession.getMode());
-
         myCR.insert(MyContentProvider.CONTENT_URI, values);
     }
 

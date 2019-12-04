@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.example.runningtracker.DbHelper;
 
@@ -81,6 +82,7 @@ public class MyContentProvider extends ContentProvider {
             case PRODUCTS:
 
                 id = sqlDB.insert(dbHelper.TABLE_PRODUCTS, null, values);
+                Log.d("mama","id is " + id);
                 break;
 
             default:

@@ -11,18 +11,22 @@ import android.graphics.Color;
 import android.graphics.drawable.Icon;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.Toast;
 
 public class TrackerService extends Service {
 
     final String CHANNEL_ID = "MY_CHANNEL";
     final int NOTIFY_ID = 2222;
+    String exerciseMode;
+    long startDateAndTime;
 
     private IBinder binder = new MyBinder();
 
     GPSTracker tracker;
 
     public TrackerService() {
+
     }
 
     @Override
@@ -45,6 +49,8 @@ public class TrackerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        exerciseMode = intent.getStringExtra("mode");
+        startDateAndTime = intent.getLongExtra("startDateAndTime",0);
         tracker = new GPSTracker(getApplicationContext());
         tracker.startGPS();
         Toast.makeText(this, "GPS START", Toast.LENGTH_LONG).show();
@@ -62,6 +68,8 @@ public class TrackerService extends Service {
     public void sendNotification(){
         Intent resultIntent = new Intent(this, MainActivity.class);
         resultIntent.putExtra("return",true);
+        resultIntent.putExtra("mode",exerciseMode);
+        resultIntent.putExtra("startDateAndTime",startDateAndTime);
 
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(

@@ -51,7 +51,6 @@ public class GPSTracker extends Service implements LocationListener {
                 startTimer();
             }
         }catch(SecurityException e){
-            Log.d("mama","error");
         }
 
     }
@@ -108,7 +107,6 @@ public class GPSTracker extends Service implements LocationListener {
             locationStringList += location.getLatitude() + "," + location.getLongitude();
         }
 
-        Log.d("mama","tracking" + location.getLongitude() + ", " + location.getLatitude() );
     }
 
     @Override

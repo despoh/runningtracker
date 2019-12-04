@@ -183,10 +183,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap = googleMap;
         LatLng startingPoint = null;
         LatLng endingPoint = null;
-        // Add a marker in Sydney and move the camera
-//        LatLng sydney = new LatLng(-34, 151);
-//        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
         PolylineOptions polylineOptions = new PolylineOptions();
         polylineOptions.color(Color.RED);
         polylineOptions.width(5);

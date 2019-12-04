@@ -65,7 +65,6 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onStop() {
-        Log.d("mama","onStopcalled");
 
         super.onStop();
 
@@ -86,7 +85,6 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        Log.d("mama","onDestroy called");
         super.onDestroy();
             if(isRunning){
                 timer.cancel();
@@ -129,11 +127,7 @@ public class HomeFragment extends Fragment {
             Intent intent = new Intent(getContext(),TrackerService.class);
             getContext().bindService(intent, connection, Context.BIND_AUTO_CREATE);
             isRunning = true;
-//            exerciseMode= getActivity().getIntent().getStringExtra("mode");
-//            startDateAndTime = getActivity().getIntent().getLongExtra("startDateAndTime",0);
-//            msgToShowModeTextView.setText(exerciseMode.toUpperCase() + " MODE");
-//            msgToShowModeTextView.setVisibility(View.VISIBLE);
-//            walkingModeSwitchButton.setVisibility(View.GONE);
+
             editor.putBoolean("return",false);
             editor.commit();
         }
@@ -189,7 +183,6 @@ public class HomeFragment extends Fragment {
                     exerciseMode = "Run";
                 }
 
-                Log.d("mama","mode changed: "+ exerciseMode);
             }
         });
     }
@@ -257,11 +250,6 @@ public class HomeFragment extends Fragment {
             new AlertDialog.Builder(getContext())
                     .setTitle("Sessions too short < 1s")
                     .setMessage("It's not saved")
-
-                    // Specifying a listener allows you to take an action before dismissing the dialog.
-                    // The dialog is automatically dismissed when a dialog button is clicked.
-
-                    // A null listener allows the button to dismiss the dialog and take no further action.
                     .setNegativeButton("OK", null)
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show();
@@ -418,18 +406,12 @@ public class HomeFragment extends Fragment {
         new AlertDialog.Builder(getContext())
                 .setTitle("GPS turned OFF")
                 .setMessage(msg)
-
-                // Specifying a listener allows you to take an action before dismissing the dialog.
-                // The dialog is automatically dismissed when a dialog button is clicked.
                 .setPositiveButton("Go to location Setting", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
 
                     }
-                })
-
-                // A null listener allows the button to dismiss the dialog and take no further action.
-                .setNegativeButton("OK", null)
+                }).setNegativeButton("OK", null)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }

@@ -82,7 +82,6 @@ public class MyContentProvider extends ContentProvider {
             case PRODUCTS:
 
                 id = sqlDB.insert(dbHelper.TABLE_PRODUCTS, null, values);
-                Log.d("mama","id is " + id);
                 break;
 
             default:
